@@ -199,25 +199,24 @@ if not st.session_state.logged_in:
 
     # GOOGLE OAUTH
     elif menu == "Google OAuth":
-        
+
         st.subheader("🔐 Sign in with Google")
-        
+
         CLIENT_ID = GOOGLE_CLIENT_ID
         CLIENT_SECRET = GOOGLE_CLIENT_SECRET
         AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
         TOKEN_URL = "https://oauth2.googleapis.com/token"
         REFRESH_TOKEN_URL = TOKEN_URL
-        REVOKE_TOKEN_URL = "https://oauth2.googleapis.com/revoke"
-        
+
+        # ✅ REVOKE_TOKEN_URL removed to fix MissingRevokeTokenAuthMethodError
         oauth2 = OAuth2Component(
             CLIENT_ID,
             CLIENT_SECRET,
             AUTHORIZE_URL,
             TOKEN_URL,
             REFRESH_TOKEN_URL,
-            REVOKE_TOKEN_URL,
         )
-        
+
         result = oauth2.authorize_button(
             name="Continue with Google",
             icon="https://www.google.com/favicon.ico",
@@ -227,7 +226,7 @@ if not st.session_state.logged_in:
             pkce="S256",
             key="google_login",
         )
-        
+
         if result:
             st.session_state.logged_in = True
             st.session_state.username = "Google User"
@@ -641,8 +640,6 @@ elif page == "Dataset Upload":
             upload_df.head()
         )
 
-        # DATASET SHAPE
-
         st.subheader(
             "Dataset Overview"
         )
@@ -668,8 +665,6 @@ elif page == "Dataset Upload":
             len(numeric_cols)
         )
 
-        # COLUMN TYPES
-
         st.subheader(
             "Column Information"
         )
@@ -685,8 +680,6 @@ elif page == "Dataset Upload":
         st.dataframe(
             info_df
         )
-
-        # MISSING VALUES
 
         st.subheader(
             "Missing Values Analysis"
@@ -707,8 +700,6 @@ elif page == "Dataset Upload":
         st.dataframe(
             missing
         )
-
-        # HISTOGRAM
 
         if len(numeric_cols) > 0:
 
@@ -732,8 +723,6 @@ elif page == "Dataset Upload":
                 use_container_width=True
             )
 
-        # CORRELATION
-
         if len(numeric_cols) > 1:
 
             st.subheader(
@@ -755,14 +744,11 @@ elif page == "Dataset Upload":
                 use_container_width=True
             )
 
-        # AI INSIGHTS
-
         st.subheader(
             "🤖 AI Dataset Insights"
         )
 
         rows = upload_df.shape[0]
-
         cols = upload_df.shape[1]
 
         st.info(
@@ -778,8 +764,6 @@ Dataset contains {rows} rows and {cols} columns.
 ✔ Suitable for Machine Learning
 """
         )
-
-        # AUTO PREDICTION
 
         if len(numeric_cols) > 0:
 
@@ -861,24 +845,19 @@ Predicted Future Value of
                 "Analysis Saved To History"
             )
 
-        # DOWNLOAD REPORT
-
         st.subheader(
             "Download Report"
         )
 
         report = pd.DataFrame({
-
             "Metric":[
                 "Rows",
                 "Columns"
             ],
-
             "Value":[
                 rows,
                 cols
             ]
-
         })
 
         csv = report.to_csv(
@@ -891,7 +870,7 @@ Predicted Future Value of
             "analysis_report.csv",
             "text/csv"
         )
-        
+
 elif page == "Dataset History":
 
     st.title("📜 Dataset Analysis History")
@@ -1014,7 +993,7 @@ elif page == "SMTP Email":
 
             sender_email = "adithyadinesh1316@gmail.com"
 
-            app_password = st.secrets.get("app_password", "adtbnyoojayknzny")
+            app_password = st.secrets.get("app_password", "")
 
             subject = "SaaS Business Analytics Report"
 
